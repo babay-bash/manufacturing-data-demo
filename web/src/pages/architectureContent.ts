@@ -60,15 +60,14 @@ export const ASSUMPTIONS = [
 
 export const QUESTIONS: { q: string; note?: string }[] = [
   { q: 'Which key KPIs does the business depend on, and which cause the most pain today? Who owns each one?' },
-  { q: 'What are the functional requirements for security and access: who should see which records, which facilities must be isolated, and which fields are sensitive?',
-    note: 'I translate these into a security model: access and functional roles, RBAC in the database, row-level security (e.g. facility isolation) and column masking for sensitive fields. SQL, BI and AI all carry the user’s identity end to end, so every query goes through database RBAC.' },
+  { q: 'What are the functional requirements for security and access: who should see which records, which facilities must be isolated, and which fields are sensitive?' },
   { q: 'For each priority source: which integration options exist, how often does data change, what are average and peak volumes, and what fault tolerance and failure modes must we handle? Which use cases truly need real-time data?' },
   { q: 'Which platforms and controls already exist that we should reuse, and which systems are authoritative for customer, supplier, asset and facility identity?' },
   { q: 'Which AI use cases are most urgent, and what counts as a correct, traceable answer?' },
 ];
 
 /** Design detail, shown as bullets above the diagram. */
-export const DESIGN_BULLETS: { title: string; bullets: string[] }[] = [
+export const DESIGN_BULLETS: { title: string; bullets: string[]; sub?: { title: string; lead: string; bullets: string[] } }[] = [
   { title: 'Ingestion', bullets: [
     'CDC where reliable; APIs or exports otherwise.',
     'Keep source IDs, event and ingestion time, schema version.',
@@ -84,10 +83,11 @@ export const DESIGN_BULLETS: { title: string; bullets: string[] }[] = [
   { title: 'Metrics and access', bullets: [
     'Each metric: owner, definition, grain, time rules.',
     'One name, one meaning; CI rejects conflicts.',
+  ], sub: { title: 'Security model', lead: 'Access requirements from discovery are translated into:', bullets: [
     'Access and functional roles, with RBAC in the database.',
     'Row-level security (e.g. facility isolation); column masking for sensitive fields.',
-    'SQL, BI and AI carry the user’s identity end to end; no shared service accounts.',
-  ] },
+    'SQL, BI and AI carry the user’s identity end to end, so every query goes through database RBAC.',
+  ] } },
 ];
 
 export const DEEPER = [

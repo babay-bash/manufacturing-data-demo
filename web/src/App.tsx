@@ -23,6 +23,12 @@ const readHash = () => {
 };
 
 export default function App() {
+  // Shareable document view (used for the PDF / HTML export): architecture only, no app chrome.
+  if (window.location.hash === '#doc') return <main className="doc"><ArchitecturePage doc /></main>;
+  return <DemoApp />;
+}
+
+function DemoApp() {
   const [tab, setTab] = useState(readHash);
   useEffect(() => {
     const on = () => { setTab(readHash()); window.scrollTo(0, 0); };

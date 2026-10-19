@@ -6,15 +6,30 @@ import * as C from './architectureContent';
 
 const Bullets = ({ items }: { items: string[] }) => <ul className="bullets">{items.map((b, i) => <li key={i}>{b}</li>)}</ul>;
 
-export function ArchitecturePage() {
+const REPO_URL = 'https://github.com/babay-bash/manufacturing-data-demo';
+const DOWNLOAD_URL = `${REPO_URL}/releases/download/v0.1.0/manufacturing-data-demo-macos-arm64.tar.gz`;
+
+/** `doc` renders the shareable document version (PDF / HTML export): title block, no hover hints. */
+export function ArchitecturePage({ doc = false }: { doc?: boolean }) {
   const [sel, setSel] = useState<string | null>(null);
 
   return (
     <>
-      <div className="page-head">
-        <h1>Architecture</h1>
-        <p>The proposed platform. Hover a component for its rationale; click to pin it.</p>
-      </div>
+      {doc ? (
+        <div className="doc-head">
+          <h1>Trusted Data Foundation: Architecture Proposal</h1>
+          <p className="muted">Babak Bashiri · Data platform proposal for a global industrial manufacturer · October 2026</p>
+          <div className="doc-links">
+            <span><strong>Runnable demo:</strong> <a href={REPO_URL}>github.com/babay-bash/manufacturing-data-demo</a></span>
+            <span><strong>Offline macOS app (Apple Silicon):</strong> <a href={DOWNLOAD_URL}>download</a>, unpack, run <code>./start.command</code></span>
+          </div>
+        </div>
+      ) : (
+        <div className="page-head">
+          <h1>Architecture</h1>
+          <p>The proposed platform. Hover a component for its rationale; click to pin it.</p>
+        </div>
+      )}
 
       <div className="callout">
         <strong>Recommendation</strong>
@@ -24,7 +39,19 @@ export function ArchitecturePage() {
 
       <section className="section">
         <div className="grid c3">
-          {C.DESIGN_BULLETS.map((d) => <Card key={d.title}><h3>{d.title}</h3><Bullets items={d.bullets} /></Card>)}
+          {C.DESIGN_BULLETS.map((d) => (
+            <Card key={d.title}>
+              <h3>{d.title}</h3>
+              <Bullets items={d.bullets} />
+              {d.sub && (
+                <div className="sub-block">
+                  <h4>{d.sub.title}</h4>
+                  <p className="small muted">{d.sub.lead}</p>
+                  <Bullets items={d.sub.bullets} />
+                </div>
+              )}
+            </Card>
+          ))}
         </div>
       </section>
 
@@ -50,7 +77,7 @@ export function ArchitecturePage() {
             <h3>Questions for the client</h3>
             <ol className="steps" style={{ marginBottom: 0 }}>
               {C.QUESTIONS.map((q, i) => (
-                <li key={i}>{q.q}{q.note && <div className="q-note">{q.note}</div>}</li>
+                <li key={i}>{q.q}</li>
               ))}
             </ol>
           </Card>

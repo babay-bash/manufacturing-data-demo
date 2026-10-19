@@ -3,6 +3,11 @@
 A small, runnable slice of the architecture proposal in [`docs/design.md`](docs/design.md).
 It runs entirely on a Mac, offline, with **synthetic data**.
 
+**Read first:** the architecture proposal as a
+[PDF](docs/export/Trusted-Data-Foundation-Architecture.pdf) or a
+[single-file HTML page](docs/export/Trusted-Data-Foundation-Architecture.html) (download and open it
+in a browser).
+
 > **Local demo, not production.** Kafka, object storage, Snowflake, CDC and the AI assistant
 > appear in the architecture diagram but do **not** run here.
 
@@ -100,6 +105,7 @@ cd manufacturing-data-demo
 | `make test` | All tests: `uv run pytest -q` (48 tests, ~25 s; runs the real dbt build) |
 | `make pipeline` | Run ingestion + `dbt build` from the command line |
 | `make ui` | Rebuild the React UI into `web/dist` (needs Node 20+) |
+| `make export` | Re-export the Architecture page to PDF and HTML in `docs/export/` (needs Google Chrome) |
 | `make release` | Build the offline release for this Mac into `dist/` |
 | `make verify` | Unpack the release into an empty folder and run it offline in a sandbox |
 

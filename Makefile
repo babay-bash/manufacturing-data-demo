@@ -1,4 +1,4 @@
-.PHONY: setup fixtures pipeline app ui test release verify clean
+.PHONY: setup fixtures pipeline app ui export test release verify clean
 
 setup:      ## Create .venv from uv.lock (developer workflow)
 	uv sync
@@ -14,6 +14,9 @@ app:        ## Launch API + UI (same as ./start.command)
 
 ui:         ## Rebuild the React UI into web/dist (commit the result)
 	cd web && npm ci && npm run build
+
+export:     ## Export the Architecture page to docs/export/*.pdf and *.html (needs Google Chrome)
+	uv run python scripts/export_architecture.py
 
 test:       ## Unit, integration (real dbt) and smoke tests
 	uv run pytest -q
