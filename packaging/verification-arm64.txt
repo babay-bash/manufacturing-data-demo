@@ -1,11 +1,11 @@
-verify_clean_mac  2026-10-19T13:03:54Z  host macOS 15.3.1 arm64
-archive: manufacturing-data-demo-macos-arm64.tar.gz  sha256 f43fa0a53c5b787be9dcc69554555a1fdab8e46665a33d151f48f1949b2a18d5
-extracted to /tmp/demo-verify.GkJUkR/manufacturing-data-demo-macos-arm64 (quarantine flag applied to simulate a browser download)
+verify_clean_mac  2026-10-19T14:08:15Z  host macOS 15.3.1 arm64
+archive: manufacturing-data-demo-macos-arm64.tar.gz  sha256 67a2cb6460ec38d517473a772920ecc5d70038b4a9ae9ca3ea9c08b1c9c0504f
+extracted to /tmp/demo-verify.ErJWi7/manufacturing-data-demo-macos-arm64 (quarantine flag applied to simulate a browser download)
 tools visible on PATH: uv=none dbt=none brew=none
-launcher started app at http://127.0.0.1:52443 (network-denied sandbox)
+launcher started app at http://127.0.0.1:53569 (network-denied sandbox)
 quarantine flag cleared by launcher: yes
-health endpoint: ok
-page served over localhost: ok
+API status endpoint: ok
+web UI served over localhost: ok
 running pipeline with the bundled interpreter (sandboxed, offline)…
 pipeline: Done. PASS=128 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=128
 pipeline status: success
