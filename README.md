@@ -181,7 +181,11 @@ rates and volumes are invented.
 
 ## AI assistance
 
-The proposal was written by the author with AI help for organizing, editing and challenging
-trade-offs. This repository was built with **Claude Code** from the author's specification and
-reviewed by the author. Details, including where the author overrode AI suggestions, are in
+- **Architecture write-up:** AI helped organize, edit and challenge trade-offs. Priorities and final
+  choices are the author's.
+- **Demo:** generated with AI (**Claude Code**) from the author's specification and reviewed by the
+  author. This covers the application code, the synthetic data and source samples (MES, QMS, ERP,
+  telemetry), and the manufacturing KPI definitions.
+
+Details, including where the author overrode AI suggestions, are in
 [`docs/ai_assistance.md`](docs/ai_assistance.md).

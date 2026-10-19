@@ -116,7 +116,7 @@ export function ArchitecturePage() {
           <Card><h3>Not building yet</h3><Bullets items={C.NOT_YET} /></Card>
           <Card flat>
             <h3>AI use disclosure</h3>
-            <p className="small muted">{C.AI_DISCLOSURE}</p>
+            <ul className="bullets small muted">{C.AI_DISCLOSURE.map((d, i) => <li key={i}>{d}</li>)}</ul>
             <p className="small muted" style={{ marginBottom: 0 }}><em>{C.FOOTNOTE}</em></p>
           </Card>
         </div>

@@ -44,11 +44,21 @@ def is_ready() -> bool:
 
 
 def connect() -> duckdb.DuckDBPyConnection:
-    """Fresh read-only connection per request (lets the pipeline atomically swap the file)."""
+    """Fresh read-only connection per request (lets the pipeline atomically swap the file).
+
+    Concurrent connections to the same file in this process share one DuckDB database instance,
+    so the first connection sets UTC globally and locks the configuration;
+    later overlapping connections find it already locked (and already UTC) and skip the SETs.
+    """
     con = duckdb.connect(str(paths().serving_db), read_only=True, config={
         "enable_external_access": False, "threads": 2, "memory_limit": "1GB"})
-    con.execute("SET TimeZone='UTC'")
-    con.execute("SET lock_configuration=true")
+    try:
+        con.execute("SET GLOBAL TimeZone='UTC'")  # global, so later connections inherit it
+        con.execute("SET lock_configuration=true")
+    except duckdb.InvalidInputException as exc:
+        if "locked" not in str(exc):
+            con.close()
+            raise
     return con
 
 

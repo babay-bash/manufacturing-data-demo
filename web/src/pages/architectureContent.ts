@@ -165,6 +165,9 @@ export const NOT_YET = [
   'Iceberg everywhere',
 ];
 
-export const AI_DISCLOSURE = 'AI helped organize and edit this write-up and challenge trade-offs. Priorities and final choices are my own.';
+export const AI_DISCLOSURE = [
+  'Write-up: AI helped organize, edit and challenge trade-offs. Priorities and final choices are mine.',
+  'Demo, generated with AI (Claude Code) from my specification and reviewed by me: the application code, the synthetic data and source samples (MES, QMS, ERP, telemetry), and the manufacturing KPI definitions.',
+];
 
 export const FOOTNOTE = 'A proposal based on stated assumptions; products and SLAs would be confirmed in discovery.';

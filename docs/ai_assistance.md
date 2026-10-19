@@ -4,8 +4,14 @@
 AI helped organize and edit the write-up and challenge trade-offs. The priorities and final choices
 are the author's.
 
-## Demo code
-The demo repository was implemented with Claude Code from the author's written specification and reviewed by the author.
+## Demo (code, synthetic data, KPIs)
+Generated with AI (Claude Code) from the author's written specification, then reviewed by the author:
+- **Application code:** Python ingestion and orchestration, dbt models and tests, FastAPI server,
+  React/TypeScript UI, packaging scripts and tests.
+- **Synthetic data and source samples:** the seeded generator and the MES, QMS, ERP and telemetry
+  sample files, including the injected anomalies. All names, rates and volumes are invented.
+- **Manufacturing KPI definitions:** variable cost per good unit, OEE (availability, performance,
+  quality), scrap rate, yield, energy per good unit and downtime, with their formulas.
 
 ## Where the author's decisions shaped or overrode AI suggestions
 Taken from the working draft's "user's decisions / choices" markers:
