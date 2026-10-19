@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { NODE_DETAILS } from '../pages/architectureContent';
+import { useEffect, useMemo, useState } from 'react';
 import { Logo } from './Logo';
 import { ARCH_H, ARCH_W, EDGES, LANES, NODES } from './architectureLayout';
 import { bezier, port, ScaledCanvas } from './ScaledCanvas';
@@ -15,7 +16,7 @@ export function ArchitectureDiagram({ onSelect, selected }: { onSelect: (id: str
   }, [active]);
 
   return (
-    <ScaledCanvas w={ARCH_W} h={ARCH_H}>
+    <ScaledCanvas w={ARCH_W} h={ARCH_H} overlay={(scale) => active && <NodePopover id={active} pinned={active === selected} scale={scale} onClose={() => onSelect(null)} />}>
       {LANES.map((l) => (
         <div key={l.id} className={`lane ${l.gov ? 'gov' : ''}`} style={{ left: l.box.x, top: l.box.y, width: l.box.w, height: l.box.h }}>
           <div className="lane-label">{l.label}</div>
@@ -64,5 +65,41 @@ export function ArchitectureDiagram({ onSelect, selected }: { onSelect: (id: str
         );
       })}
     </ScaledCanvas>
+  );
+}
+
+const POPOVER_W = 360;
+
+/** Rationale card anchored beside the active node, in unscaled (readable) pixels. Hover shows a
+ *  preview that ignores the pointer; a click pins it with a close button. */
+function NodePopover({ id, pinned, scale, onClose }: { id: string; pinned: boolean; scale: number; onClose: () => void }) {
+  const node = NODES.find((n) => n.id === id);
+  const detail = NODE_DETAILS[id];
+  useEffect(() => {
+    if (!pinned) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [pinned, onClose]);
+  if (!node || !detail) return null;
+  const { x, y, w, h } = node.box;
+  // Open to the right of the node unless that would overflow the canvas; then open to its left.
+  const rightSide = (x + w) * scale + 12 + POPOVER_W <= ARCH_W * scale;
+  const left = rightSide ? (x + w) * scale + 12 : Math.max(0, x * scale - 12 - POPOVER_W);
+  // Nodes in the lower half grow the card upward so it never runs off the diagram.
+  const vertical = y > ARCH_H / 2 ? { bottom: Math.max(0, (ARCH_H - y - h) * scale - 8) } : { top: Math.max(0, y * scale - 8) };
+  return (
+    <div className={`node-popover ${pinned ? 'pinned' : ''}`} role="dialog" aria-label={detail.heading}
+      style={{ left, width: POPOVER_W, ...vertical }}>
+      <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, flexWrap: 'nowrap' }}>
+        <div>
+          <div className="popover-group">{detail.group}</div>
+          <h4>{detail.heading}</h4>
+        </div>
+        {pinned && <button className="popover-close" onClick={onClose} aria-label="Close">✕</button>}
+      </div>
+      {detail.body.map((para, i) => <p key={i}>{para}</p>)}
+      {!pinned && <div className="popover-hint">Click to pin</div>}
+    </div>
   );
 }

@@ -1,8 +1,11 @@
 /** Renders children on a fixed design canvas (w x h) and scales it to the container width.
- *  The outer box takes the scaled height so surrounding layout flows correctly. */
+ *  The outer box takes the scaled height so surrounding layout flows correctly. `overlay` renders
+ *  unscaled content (e.g. popovers with readable text) positioned using the current scale. */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-export function ScaledCanvas({ w, h, children }: { w: number; h: number; children: ReactNode }) {
+export function ScaledCanvas({ w, h, children, overlay }: {
+  w: number; h: number; children: ReactNode; overlay?: (scale: number) => ReactNode;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useEffect(() => {
@@ -17,6 +20,7 @@ export function ScaledCanvas({ w, h, children }: { w: number; h: number; childre
   return (
     <div ref={ref} className="canvas-outer" style={{ height: h * scale }}>
       <div className="canvas-inner" style={{ width: w, height: h, transform: `scale(${scale})` }}>{children}</div>
+      {overlay?.(scale)}
     </div>
   );
 }

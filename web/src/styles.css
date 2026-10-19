@@ -260,7 +260,7 @@ details.disc > .disc-body { padding: 0 18px 16px; }
 /* ---- Architecture ---- */
 .canvas-outer { position: relative; width: 100%; }
 .canvas-inner { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
-.diagram-frame { padding: 14px; overflow: hidden; }
+.diagram-frame { padding: 14px; overflow: visible; }
 .lane { position: absolute; border-radius: 14px; border: 1px dashed var(--border-strong); background: color-mix(in srgb, var(--surface-2) 70%, transparent); }
 .lane-label { position: absolute; top: 8px; left: 0; right: 0; text-align: center; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
 .lane.gov { border-color: color-mix(in srgb, var(--warn) 50%, var(--border-strong)); background: color-mix(in srgb, var(--warn-soft) 55%, transparent); }
@@ -301,3 +301,19 @@ details.disc > .disc-body { padding: 0 18px 16px; }
 .vs { display: grid; grid-template-columns: 1fr; gap: 6px; }
 .vs .over { font-size: 12px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
 .anode .nt, .anode .ns { display: block; }
+
+/* Architecture node rationale popover */
+.node-popover {
+  position: absolute; z-index: 20; pointer-events: none;
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, .16); padding: 14px 16px; font-size: 13px; line-height: 1.5;
+  animation: popover-in .12s ease-out;
+}
+.node-popover.pinned { pointer-events: auto; border-color: var(--accent); }
+.node-popover h4 { margin: 2px 0 0; font-size: 14.5px; }
+.node-popover p { margin: 8px 0 0; color: var(--text-2); }
+.popover-group { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.popover-hint { margin-top: 10px; font-size: 11.5px; color: var(--text-3); }
+.popover-close { border: 0; background: transparent; color: var(--text-3); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 6px; }
+.popover-close:hover { background: var(--surface-2); color: var(--text); }
+@keyframes popover-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

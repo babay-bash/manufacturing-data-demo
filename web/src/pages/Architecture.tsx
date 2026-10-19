@@ -7,15 +7,13 @@ import * as C from './architectureContent';
 
 export function ArchitecturePage() {
   const [sel, setSel] = useState<string | null>(null);
-  const detail = sel ? C.NODE_DETAILS[sel] : null;
 
   return (
     <>
       <div className="page-head">
         <h1>Architecture</h1>
         <p>
-          The proposed Trusted Data Foundation, as written in the architecture proposal. Hover or click a component to see its
-          rationale. The second diagram shows the much smaller slice this demo actually runs.
+          The proposed Trusted Data Foundation, as written in the architecture proposal. Hover over a component for a short explanation of why it's there; click to pin it. The second diagram shows the much smaller slice this demo actually runs.
         </p>
       </div>
 
@@ -25,16 +23,6 @@ export function ArchitecturePage() {
           <span className="row small muted"><Badge tone="warn">Proposal</Badge> Dashed lines = governance and control</span>
         </div>
         <ArchitectureDiagram selected={sel} onSelect={setSel} />
-      </Card>
-      <Card className="detail">
-        {detail ? (
-          <>
-            <div className="row"><h3 style={{ margin: 0 }}>{detail.heading}</h3><Badge tone="accent">{detail.group}</Badge></div>
-            {detail.body.map((p, i) => <p key={i} style={{ marginTop: 8, marginBottom: 0 }}>{p}</p>)}
-          </>
-        ) : (
-          <span className="muted">Select a component above to read the reasoning behind it.</span>
-        )}
       </Card>
 
       <section className="section">
