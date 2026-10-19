@@ -317,3 +317,26 @@ details.disc > .disc-body { padding: 0 18px 16px; }
 .popover-close { border: 0; background: transparent; color: var(--text-3); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 6px; }
 .popover-close:hover { background: var(--surface-2); color: var(--text); }
 @keyframes popover-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* Future-development elements in the architecture diagram */
+:root { --future: #7c5cd6; --future-soft: rgba(124, 92, 214, .10); }
+.lane.future { border-color: color-mix(in srgb, var(--future) 55%, var(--border-strong)); background: var(--future-soft); }
+.lane.future .lane-label { color: var(--future); }
+.anode.future { border-style: dashed; border-color: color-mix(in srgb, var(--future) 60%, var(--border-strong)); }
+.mini-badge.future { background: var(--future-soft); color: var(--future); }
+.edge.future { stroke: var(--future); stroke-dasharray: 5 5; }
+.edge.future.hot { stroke: var(--future); stroke-width: 2.6; }
+.future-key { color: var(--future); font-weight: 600; }
+
+/* Bulleted design detail and evolution steps */
+ul.bullets { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.5; }
+ul.bullets li { margin-bottom: 7px; }
+ul.bullets li::marker { color: var(--accent); }
+ol.steps { margin: 4px 0 12px; padding-left: 20px; font-size: 13.5px; line-height: 1.5; }
+ol.steps li { margin-bottom: 6px; }
+ol.steps li::marker { color: var(--accent); font-weight: 700; }
+.evo { display: flex; flex-direction: column; }
+table.choices { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.choices td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+table.choices tr:last-child td { border-bottom: 0; }
+table.choices td:first-child { white-space: nowrap; }

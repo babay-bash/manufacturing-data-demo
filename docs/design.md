@@ -26,8 +26,9 @@ Before finalizing the design, I would ask:
 
 1. Which business decisions depend on the disputed KPIs? Who approves their definitions?
 2. What platforms, source integrations and security controls already exist? What should we reuse?
-3. How many assets, signals and source systems are involved? What are peak rates, retention needs
-   and actual freshness requirements?
+3. How many assets, signals and source systems are involved, with what peak rates and retention?
+   Which use cases truly need real-time data (operational monitoring, ML models, recommendation
+   systems), and which are fine with hourly or daily freshness?
 4. Which sources are authoritative for customer, supplier, asset and facility identity? How are
    conflicts resolved today?
 5. Which AI use cases are most urgent, and what would count as a correct, traceable answer?
@@ -140,6 +141,19 @@ AI demo is shared work, not a separate project started in the last week.
 agreed freshness; consistent SQL, dashboard and AI answers; access controls; repeatable deployment
 and a visible failure path. If a required source is delayed, propose an alternate KPI or a clearly
 labeled prototype rather than certify incomplete data.
+
+## How it evolves (future development)
+
+- **Add KPIs and facts iteratively.** Start from a KPI with an owner. Ingest only the new sources it
+  needs. Reuse conformed dimensions, extending them first. Add a new dimension only for a new entity
+  needed for slicing and dicing or for a feature store. Certify the KPI and add regression cases.
+- **Real-time use cases.** Kafka feeds real-time consumers directly: operational monitoring and
+  alerting, ML models needing fresh features, and recommendation systems. Build this only where
+  seconds or minutes matter; batch stays the default, and the same events still land in the archive.
+- **AI on documents (RAG).** First, clean versioning: owners mark documents current, superseded or
+  outdated, and the latest valid version is the default. Then hybrid search (vector similarity plus
+  keyword), filtered by permissions, with citations and dates, and tests that the right source ranks
+  at the top.
 
 ## What I would not build yet
 

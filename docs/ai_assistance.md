@@ -1,10 +1,8 @@
 # AI Assistance Disclosure
 
 ## Architecture proposal
-From the author's proposal: "I used AI to organize and edit this write-up and to challenge
-architecture tradeoffs. The design priorities and final choices reflect my own judgment. I
-specifically revised the initial recommendation to defer Iceberg: for large telemetry datasets used
-by multiple engines, I would evaluate it early rather than reject it on complexity alone."
+AI helped organize and edit the write-up and challenge trade-offs. The priorities and final choices
+are the author's.
 
 ## Demo code
 The demo repository was implemented with Claude Code from the author's written specification and reviewed by the author.
