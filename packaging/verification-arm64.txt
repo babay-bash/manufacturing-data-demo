@@ -1,8 +1,8 @@
-verify_clean_mac  2026-10-19T14:08:15Z  host macOS 15.3.1 arm64
-archive: manufacturing-data-demo-macos-arm64.tar.gz  sha256 67a2cb6460ec38d517473a772920ecc5d70038b4a9ae9ca3ea9c08b1c9c0504f
-extracted to /tmp/demo-verify.ErJWi7/manufacturing-data-demo-macos-arm64 (quarantine flag applied to simulate a browser download)
+verify_clean_mac  2026-10-19T14:40:58Z  host macOS 15.3.1 arm64
+archive: manufacturing-data-demo-macos-arm64.tar.gz  sha256 29557d4d17f17c5492170063cbb37df16b8f8d12a32c09eafad14f8091c60700
+extracted to /tmp/demo-verify.BkfgP3/manufacturing-data-demo-macos-arm64 (quarantine flag applied to simulate a browser download)
 tools visible on PATH: uv=none dbt=none brew=none
-launcher started app at http://127.0.0.1:53569 (network-denied sandbox)
+launcher started app at http://127.0.0.1:53990 (network-denied sandbox)
 quarantine flag cleared by launcher: yes
 API status endpoint: ok
 web UI served over localhost: ok
