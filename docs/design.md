@@ -24,13 +24,18 @@ historical pipelines immediately.
 
 Before finalizing the design, I would ask:
 
-1. Which business decisions depend on the disputed KPIs? Who approves their definitions?
-2. What platforms, source integrations and security controls already exist? What should we reuse?
-3. How many assets, signals and source systems are involved, with what peak rates and retention?
-   Which use cases truly need real-time data (operational monitoring, ML models, recommendation
-   systems), and which are fine with hourly or daily freshness?
-4. Which sources are authoritative for customer, supplier, asset and facility identity? How are
-   conflicts resolved today?
+1. Which key KPIs does the business depend on, and which cause the most pain today? Who owns each
+   one?
+2. What are the functional requirements for security and access: who should see which records,
+   which facilities must be isolated, and which fields are sensitive? I would translate these into
+   a security model: access and functional roles, RBAC in the database, row-level security (for
+   example facility isolation) and column masking for sensitive fields. SQL, BI and AI all carry
+   the user's identity end to end, so every query goes through database RBAC.
+3. For each priority source: which integration options exist, how often does data change, what are
+   average and peak volumes, and what fault tolerance and failure modes must we handle? Which use
+   cases truly need real-time data (operational monitoring, ML models, recommendation systems)?
+4. Which platforms and controls already exist that we should reuse, and which systems are
+   authoritative for customer, supplier, asset and facility identity?
 5. Which AI use cases are most urgent, and what would count as a correct, traceable answer?
 
 ## Proposed architecture
@@ -67,9 +72,12 @@ authoritative attributes must be agreed with business owners, not guessed from s
 **Metrics and access.** Each certified metric needs an owner, definition, grain, filters, time
 rules and documented variants. Different business definitions can coexist under different names;
 the same name must not quietly mean two things. CI should reject missing owners and conflicting
-names. Review is still needed to catch semantic duplicates with different names. Preserve the
-requesting user's permissions through BI and AI tools; enforce row and column access at the data
-layer.
+names. Review is still needed to catch semantic duplicates with different names.
+
+Access is modeled as access roles and functional roles, enforced with RBAC in the database, plus
+row-level security (for example facility isolation) and column masking for sensitive fields. SQL,
+BI and AI tools carry the requesting user's identity end to end, so every query runs under that
+user's database permissions; no shared service account runs user queries with broader access.
 
 ## Where I would go deeper
 
@@ -121,13 +129,13 @@ top results.
 ## First 90 days
 
 - **Days 1–30: agree and baseline.** Inventory the highest-value sources and competing KPI
-  tables. Choose one KPI and one AI question set. Identify business owners and authoritative
+  tables. Choose the key KPIs and an AI question set. Identify business owners and authoritative
   systems. Confirm security, data volume, latency and source-access risks. Record current KPI
   disagreements and freshness gaps.
 - **Days 31–60: build a narrow end-to-end path.** Land required source data. Prototype and
   approve KPI SQL. Build source staging, canonical facts/dimensions, dbt tests and an initial
   semantic definition. Add CI, source delivery checks, and basic lineage and alerting.
-- **Days 61–90: certify and demonstrate.** Reconcile the KPI with its owner. Show the same
+- **Days 61–90: certify and demonstrate.** Reconcile the KPIs with their owners. Show the same
   governed result in SQL, a simple dashboard and an AI analytics demo. Run regression cases for
   semantic changes and AI questions. Report freshness, quality failures, access behavior and known
   limitations.
@@ -137,12 +145,12 @@ correctness. One engineer owns ingestion and source reconciliation. One owns dbt
 and semantic definitions. One owns platform tooling, CI, access, monitoring and AI integration. The
 AI demo is shared work, not a separate project started in the last week.
 
-**Definition of done:** one business-approved KPI; a clear owner and source lineage; tested models;
+**Definition of done:** a key set of business-approved KPIs, each with a clear owner and source lineage; tested models;
 agreed freshness; consistent SQL, dashboard and AI answers; access controls; repeatable deployment
 and a visible failure path. If a required source is delayed, propose an alternate KPI or a clearly
 labeled prototype rather than certify incomplete data.
 
-## How it evolves (future development)
+## Future evolution
 
 - **Add KPIs and facts iteratively.** Start from a KPI with an owner. Ingest only the new sources it
   needs. Reuse conformed dimensions, extending them first. Add a new dimension only for a new entity

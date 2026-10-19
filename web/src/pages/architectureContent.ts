@@ -30,7 +30,7 @@ export const NODE_DETAILS: Record<string, NodeDetail> = {
     'Each certified metric has an owner, definition, grain and time rules.',
     'One name never means two things; CI rejects conflicts.'] },
   bi: { heading: 'BI and analyst SQL', group: 'Metrics and access', body: [
-    'Same certified definitions as AI. User permissions are enforced in the data layer.'] },
+    'Same certified definitions as AI. Queries run as the user, so database RBAC, row and column policies apply.'] },
   ai: { heading: 'AI analytics assistant', group: 'Quality and AI correctness', body: [
     'Native semantic layer first, no custom agent stack. Shows which metric and source it used.'] },
   governance: { heading: 'Contracts, quality, lineage, access', group: 'Quality and AI correctness', body: [
@@ -58,12 +58,13 @@ export const ASSUMPTIONS = [
   'Small team; no need to migrate every pipeline at once.',
 ];
 
-export const QUESTIONS = [
-  'Which decisions depend on the disputed KPIs, and who approves them?',
-  'Which platforms, integrations and security controls can we reuse?',
-  'What volumes and retention, and which use cases truly need real-time data (monitoring, ML models, recommendations)?',
-  'Which sources are authoritative for customer, supplier, asset and facility identity?',
-  'Which AI use cases are most urgent, and what counts as a correct, traceable answer?',
+export const QUESTIONS: { q: string; note?: string }[] = [
+  { q: 'Which key KPIs does the business depend on, and which cause the most pain today? Who owns each one?' },
+  { q: 'What are the functional requirements for security and access: who should see which records, which facilities must be isolated, and which fields are sensitive?',
+    note: 'I translate these into a security model: access and functional roles, RBAC in the database, row-level security (e.g. facility isolation) and column masking for sensitive fields. SQL, BI and AI all carry the user’s identity end to end, so every query goes through database RBAC.' },
+  { q: 'For each priority source: which integration options exist, how often does data change, what are average and peak volumes, and what fault tolerance and failure modes must we handle? Which use cases truly need real-time data?' },
+  { q: 'Which platforms and controls already exist that we should reuse, and which systems are authoritative for customer, supplier, asset and facility identity?' },
+  { q: 'Which AI use cases are most urgent, and what counts as a correct, traceable answer?' },
 ];
 
 /** Design detail, shown as bullets above the diagram. */
@@ -83,8 +84,9 @@ export const DESIGN_BULLETS: { title: string; bullets: string[] }[] = [
   { title: 'Metrics and access', bullets: [
     'Each metric: owner, definition, grain, time rules.',
     'One name, one meaning; CI rejects conflicts.',
-    'User permissions flow through BI and AI.',
-    'Row/column access enforced in the data layer.',
+    'Access and functional roles, with RBAC in the database.',
+    'Row-level security (e.g. facility isolation); column masking for sensitive fields.',
+    'SQL, BI and AI carry the user’s identity end to end; no shared service accounts.',
   ] },
 ];
 
@@ -113,9 +115,9 @@ export const CHOICES: { choice: string; over: string; why: string }[] = [
 ];
 
 export const PHASES = [
-  { when: 'Days 1–30', title: 'Agree and baseline', bullets: ['Inventory sources and competing KPIs', 'Pick one KPI and one AI question set', 'Name owners; confirm access, volume and latency risks'] },
+  { when: 'Days 1–30', title: 'Agree and baseline', bullets: ['Inventory sources and competing KPIs', 'Pick the key KPIs and an AI question set', 'Name owners; confirm access, volume and latency risks'] },
   { when: 'Days 31–60', title: 'Build one end-to-end path', bullets: ['Land sources; approve KPI SQL', 'Staging, facts/dims, dbt tests, semantic definition', 'CI, delivery checks, lineage, alerting'] },
-  { when: 'Days 61–90', title: 'Certify and demonstrate', bullets: ['Reconcile the KPI with its owner', 'Same result in SQL, dashboard and AI', 'Report freshness, failures and limits'] },
+  { when: 'Days 61–90', title: 'Certify and demonstrate', bullets: ['Reconcile the KPIs with their owners', 'Same result in SQL, dashboard and AI', 'Report freshness, failures and limits'] },
 ];
 
 export const TEAM = [
@@ -126,7 +128,7 @@ export const TEAM = [
 ];
 
 export const DONE = [
-  'One business-approved KPI with an owner and lineage',
+  'A key set of business-approved KPIs, each with an owner and lineage',
   'Tested models and agreed freshness',
   'Same answer in SQL, dashboard and AI',
   'Access controls, repeatable deployment, visible failures',

@@ -48,7 +48,11 @@ export function ArchitecturePage() {
           <Card><h3>Assumptions</h3><Bullets items={C.ASSUMPTIONS} /></Card>
           <Card>
             <h3>Questions for the client</h3>
-            <ol className="steps" style={{ marginBottom: 0 }}>{C.QUESTIONS.map((q, i) => <li key={i}>{q}</li>)}</ol>
+            <ol className="steps" style={{ marginBottom: 0 }}>
+              {C.QUESTIONS.map((q, i) => (
+                <li key={i}>{q.q}{q.note && <div className="q-note">{q.note}</div>}</li>
+              ))}
+            </ol>
           </Card>
         </div>
       </section>
@@ -94,7 +98,7 @@ export function ArchitecturePage() {
       </section>
 
       <section className="section">
-        <h2>How it evolves</h2>
+        <h2>Future evolution</h2>
         <div className="grid c3">
           {C.EVOLUTION.map((e) => (
             <Card key={e.title}>
