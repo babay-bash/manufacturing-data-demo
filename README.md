@@ -57,8 +57,17 @@ correctness" deep dive from the proposal, at laptop scale.
 
 Requires nothing preinstalled: no Python, Node, Homebrew, Docker, dbt or network.
 
-1. Download `manufacturing-data-demo-macos-arm64.tar.gz` from this repo's **Releases** page
-   (Apple Silicon Macs).
+1. **Download the release file** (Apple Silicon Macs, ~145 MB):
+   **[manufacturing-data-demo-macos-arm64.tar.gz](https://github.com/babay-bash/manufacturing-data-demo/releases/download/v0.1.0/manufacturing-data-demo-macos-arm64.tar.gz)**
+
+   It is a GitHub **Release asset**, not a file in the repository tree. You can also find it on the
+   [v0.1.0 release page](https://github.com/babay-bash/manufacturing-data-demo/releases/tag/v0.1.0)
+   under **Assets**, next to its `.sha256` checksum. Or download it from Terminal:
+
+   ```bash
+   cd ~/Downloads
+   curl -LO https://github.com/babay-bash/manufacturing-data-demo/releases/download/v0.1.0/manufacturing-data-demo-macos-arm64.tar.gz
+   ```
 2. In Terminal:
 
    ```bash
