@@ -38,12 +38,14 @@ echo "==> Installing locked dependencies into the bundled interpreter"
 uv pip install --python "$PY" --require-hashes --no-deps --compile-bytecode --quiet \
   -r packaging/requirements.lock
 
-echo "==> Copying application sources, dbt project and fixtures"
+[[ -f web/dist/index.html ]] || { echo "web/dist missing: run (cd web && npm ci && npm run build)"; exit 1; }
+echo "==> Copying application sources, prebuilt web UI, dbt project and fixtures"
 rsync -a --exclude '__pycache__' --exclude 'target/' --exclude 'logs/' --exclude '.DS_Store' \
-  app pipeline dbt_project data docs sql "$OUT/"
+  server pipeline dbt_project data docs sql "$OUT/"
+mkdir -p "$OUT/web" && cp -R web/dist "$OUT/web/dist"
 cp start.command README.md AGENTS.md THIRD_PARTY_LICENSES.md pyproject.toml uv.lock "$OUT/"
 chmod +x "$OUT/start.command"
-"$PY" -m compileall -q "$OUT/app" "$OUT/pipeline"
+"$PY" -m compileall -q "$OUT/server" "$OUT/pipeline"
 
 echo "==> Recording version provenance"
 {
@@ -52,7 +54,7 @@ echo "==> Recording version provenance"
   echo "arch: $ARCH"
   echo "macos_build_host: $(sw_vers -productVersion)"
   echo "python: $("$PY" --version)"
-  echo "dbt: $("$PY" -c 'from importlib.metadata import version as v; print("dbt-core", v("dbt-core"), "/ dbt-duckdb", v("dbt-duckdb"), "/ duckdb", v("duckdb"), "/ streamlit", v("streamlit"))')"
+  echo "dbt: $("$PY" -c 'from importlib.metadata import version as v; print("dbt-core", v("dbt-core"), "/ dbt-duckdb", v("dbt-duckdb"), "/ duckdb", v("duckdb"), "/ fastapi", v("fastapi"))')"
   echo "signed: no (unsigned, not notarized — see README 'Gatekeeper')"
 } > "$OUT/BUILD_INFO.txt"
 

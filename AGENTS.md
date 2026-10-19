@@ -7,8 +7,9 @@ This file tells an automated coding agent how to work on this repository safely.
 
 A **local, offline demo** of a governed manufacturing data platform. Landed synthetic files
 are loaded by Python into DuckDB `raw`. **Real dbt** (dbt-core 1.10 + dbt-duckdb) builds staging,
-intermediate, quarantine, marts and reporting. A Streamlit app (4 tabs) reads the result. It is
-interview material: clarity and correctness matter more than features.
+intermediate, quarantine, marts and reporting. A FastAPI server (`server/`) exposes it to a React +
+TypeScript UI (`web/`, five tabs, prebuilt into the committed `web/dist`). It is interview material:
+clarity and correctness matter more than features.
 
 ## Setup and commands
 
@@ -16,7 +17,10 @@ interview material: clarity and correctness matter more than features.
 uv sync                                   # Python 3.12 venv from uv.lock (never pip install ad hoc)
 uv run pytest -q                          # all tests (~25 s); must pass before you finish
 uv run python -m pipeline.run [--reset]   # CLI pipeline run (DEMO_HOME=/tmp/x to isolate)
-DEMO_HOME=$PWD/.demo_home ./start.command # launch the app locally
+DEMO_HOME=$PWD/.demo_home ./start.command # launch API + prebuilt UI locally
+DEMO_HOME=$PWD/.demo_home uv run python -m server --port 8765   # API only (for UI dev)
+(cd web && npm ci && npm run dev)         # UI dev server on :5173, proxies /api to :8765
+(cd web && npm run build)                 # REQUIRED after any web/ change: commit web/dist
 packaging/build_macos.sh && packaging/verify_clean_mac.sh   # release + offline verification
 ```
 
@@ -37,7 +41,7 @@ DEMO_DB_PATH=/tmp/demo.duckdb uv run python -c "from dbt.cli.main import cli; cl
    `assert_fact_grain_matches_mes` and `test_fact_grain_has_no_row_multiplication` guard this.
 2. **Store only additive measures in the fact.** KPIs are ratios of sums, defined **once** in
    `dbt_project/dbt_project.yml` → `vars.kpis`, rendered by the `kpi_select()` macro and read by
-   `app/kpis.py`. To add or change a KPI, edit the YAML only, then keep
+   `server/kpis.py`. To add or change a KPI, edit the YAML only, then keep
    `test_canonical_metrics_reconcile_dashboard_with_dbt` green. Never hard-code numbers in charts.
 3. **Business transformations live in dbt SQL, not Python.** Python handles ingestion, orchestration
    and the UI only. Do not replace dbt with hand-run SQL.
@@ -50,7 +54,7 @@ DEMO_DB_PATH=/tmp/demo.duckdb uv run python -c "from dbt.cli.main import cli; cl
    and copies it over `<DEMO_HOME>/warehouse.duckdb` only on full success. Both files must keep
    the **same file name**, because DuckDB views bind to the catalog name, which comes from the file
    name. Failures must never report success or promote partial output.
-7. **SQL Explorer stays read-only.** Keep all layers in `app/db.py`: the DuckDB statement-type
+7. **SQL Explorer stays read-only.** Keep all layers in `server/db.py`: the DuckDB statement-type
    check, the sqlglot AST denylist, the `read_only` + `enable_external_access=false` connection,
    the row cap and the timeout. Add a case to `tests/unit/test_sql_guard.py` for any change.
 8. **Offline and relocatable.** No network at runtime. Code must not write inside the repo or
@@ -68,8 +72,11 @@ DEMO_DB_PATH=/tmp/demo.duckdb uv run python -c "from dbt.cli.main import cli; cl
   key tests.
 - Python 3.12, type hints, short module docstrings explaining *why*, and no new heavy dependencies.
   Pin new dependencies in `pyproject.toml`, run `uv lock`, and note them in `THIRD_PARTY_LICENSES.md`.
-- Streamlit 1.66 API: use `width="stretch"` (not `use_container_width`) and `st.iframe` (not
-  `components.html`).
+- UI: React 18 + TypeScript + Vite; `web/src/api/types.ts` is the API contract. Change it and
+  `server/api.py` together, and keep `tests/smoke/test_api_smoke.py` green. The UI must work
+  **offline**: no CDN assets or web fonts. Logos come from vendored `simple-icons` (CC0).
+- Reviewers never need Node. `web/dist` is committed, and `packaging/build_macos.sh` refuses to
+  build without it.
 - Chart colors: facilities use fixed categorical slots `#2a78d6`, `#eb6834`, `#1baf7a` in
   `facility_id` order, and never re-color on filter. No dual-axis charts.
 
@@ -81,13 +88,15 @@ DEMO_DB_PATH=/tmp/demo.duckdb uv run python -c "from dbt.cli.main import cli; cl
 | Ingestion / run orchestration / paths and lock | `pipeline/ingest.py`, `pipeline/run.py`, `pipeline/state.py` |
 | dbt models and tests | `dbt_project/models/**`, `dbt_project/tests/**` |
 | KPI definitions | `dbt_project/dbt_project.yml` (`vars.kpis`) |
-| UI tabs | `app/tabs/{design,pipeline_panel,sql_explorer,dashboard}.py` |
-| Production design text and diagrams | `docs/design.md`, `docs/architecture.mmd`, `docs/local-flow.mmd` |
+| API | `server/api.py` (routes), `server/db.py` (read-only + SQL guard), `server/kpis.py` |
+| UI | `web/src/pages/*`, diagrams in `web/src/diagrams/*`, contract `web/src/api/types.ts` |
+| Architecture proposal text | `docs/design.md` (mirrors the Notion proposal); diagram layout in `web/src/diagrams/` |
 
 ## Review checklist for agents
 
 - [ ] `uv run pytest -q` passes. A pipeline run shows `ERROR=0` in `dbt build`.
 - [ ] Re-running the pipeline gives identical counts and KPIs (`test_rerun_is_idempotent_and_reset_works`).
 - [ ] No new network calls, absolute paths or writes outside `DEMO_HOME`.
+- [ ] `web/dist` rebuilt and committed if `web/src` changed; `npm run build` has zero TS errors.
 - [ ] Docs (`README.md`, `docs/*`) updated when behavior, counts or commands change.
 - [ ] If packaging changed, `make release && make verify` passes, and its evidence file is updated.

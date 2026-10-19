@@ -1,7 +1,10 @@
 # AI Assistance Disclosure
 
-## Design
-The architecture and trade-offs were dictated by the author (Babak Bashiri) and structured into a working draft with AI assistance (Notion AI / Claude). AI was used to organize the dictated material, not to substitute the author's design choices. The draft separates author decisions from assistant-added challenges and recommendations.
+## Architecture proposal
+From the author's proposal: "I used AI to organize and edit this write-up and to challenge
+architecture tradeoffs. The design priorities and final choices reflect my own judgment. I
+specifically revised the initial recommendation to defer Iceberg: for large telemetry datasets used
+by multiple engines, I would evaluate it early rather than reject it on complexity alone."
 
 ## Demo code
 The demo repository was implemented with Claude Code from the author's written specification and reviewed by the author.
@@ -31,6 +34,7 @@ Claude Code implemented the demo from the Notion brief. These implementation dec
 the agent, not by the brief, and are listed for review:
 - **Blue/green promotion** of the DuckDB file (build → serving copy only after all dbt tests pass). The
   brief only required "never leave stale outputs looking fresh".
+- **UI rebuilt in React + TypeScript** (prebuilt, committed `web/dist`) over a thin FastAPI layer, so dbt stays real.
 - **KPI definitions stored once in `dbt_project.yml` vars**, shared by the dbt macro and the dashboard,
   instead of a dbt semantic layer / MetricFlow, which is heavier and not supported on DuckDB here.
 - **Snapshot-replace raw loads** (each landed file is a complete snapshot), rather than append + merge.

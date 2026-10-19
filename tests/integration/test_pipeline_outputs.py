@@ -88,8 +88,8 @@ def test_wh_readings_from_v2_gateways_are_normalized(con):
 
 
 def test_canonical_metrics_reconcile_dashboard_with_dbt(built_home):
-    from app import db
-    from app.kpis import Filters, kpi_query, load_kpis
+    from server import db
+    from server.kpis import Filters, kpi_query, load_kpis
 
     sql, params = kpi_query(Filters())
     dash = db.query_df(sql, params).iloc[0]
@@ -113,7 +113,7 @@ def test_oee_components_are_plausible(con):
 def test_user_query_timeout_and_row_cap(built_home):
     import pytest
 
-    from app import db
+    from server import db
 
     res = db.run_user_query("select * from range(100000)", max_rows=100)
     assert len(res.df) == 100 and res.truncated
@@ -125,7 +125,7 @@ def test_connection_is_read_only_even_if_guard_is_bypassed(built_home):
     import duckdb
     import pytest
 
-    from app import db
+    from server import db
 
     c = db.connect()
     with pytest.raises(duckdb.Error):

@@ -1,6 +1,6 @@
 import math
 
-from app.kpis import Filters, fmt_value, kpi_query, load_kpis
+from server.kpis import Filters, fmt_value, kpi_query, load_kpis
 
 
 def test_kpis_are_ratios_of_sums_not_averages():

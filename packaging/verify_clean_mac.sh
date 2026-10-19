@@ -44,8 +44,8 @@ done
 [[ -n "$URL" ]] || { cat "$WORK/launcher.log"; log "FAIL: app did not start"; exit 1; }
 log "launcher started app at $URL (network-denied sandbox)"
 log "quarantine flag cleared by launcher: $([[ -z "$(xattr -p com.apple.quarantine "$APP/runtime/python/bin/python3" 2>/dev/null)" ]] && echo yes || echo NO)"
-curl -fs "$URL/_stcore/health" >/dev/null && log "health endpoint: ok"
-curl -fs "$URL/" | grep -qi "<title>" && log "page served over localhost: ok"
+curl -fs "$URL/api/status" >/dev/null && log "API status endpoint: ok"
+curl -fs "$URL/" | grep -qi "<title>" && log "web UI served over localhost: ok"
 
 log "running pipeline with the bundled interpreter (sandboxed, offline)…"
 if sandbox-exec -p "$PROFILE" "${CLEAN_ENV[@]}" bash -c "cd '$APP' && runtime/python/bin/python3 -m pipeline.run" \

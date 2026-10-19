@@ -51,15 +51,12 @@ fi
 PORT="$("$PY" -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')"
 URL="http://127.0.0.1:$PORT"
 
-"$PY" -m streamlit run "$DIR/app/main.py" \
-  --server.address 127.0.0.1 --server.port "$PORT" --server.headless true \
-  --server.fileWatcherType none --browser.gatherUsageStats false \
-  --global.developmentMode false --client.toolbarMode viewer &
+"$PY" -m server --port "$PORT" &
 APP_PID=$!
 trap 'say "Stopping…"; kill $APP_PID 2>/dev/null; wait $APP_PID 2>/dev/null; exit 0' INT TERM
 
 for _ in $(seq 1 120); do
-  if curl -fs "$URL/_stcore/health" >/dev/null 2>&1; then break; fi
+  if curl -fs "$URL/api/status" >/dev/null 2>&1; then break; fi
   kill -0 $APP_PID 2>/dev/null || die "The app exited during startup — see messages above."
   sleep 0.5
 done

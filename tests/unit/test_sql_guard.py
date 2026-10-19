@@ -1,6 +1,6 @@
 import pytest
 
-from app.db import UnsafeQuery, validate_user_sql
+from server.db import UnsafeQuery, validate_user_sql
 
 ALLOWED = [
     "select 1",
