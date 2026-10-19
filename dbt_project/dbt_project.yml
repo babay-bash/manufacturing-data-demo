@@ -1,0 +1,81 @@
+name: manufacturing_demo
+version: "1.0.0"
+config-version: 2
+profile: manufacturing_demo
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+models:
+  manufacturing_demo:
+    staging:      {+schema: staging, +materialized: view}
+    intermediate: {+schema: intermediate, +materialized: table}
+    quarantine:   {+schema: quarantine, +materialized: table}
+    marts:        {+schema: marts, +materialized: table}
+    reporting:    {+schema: reporting, +materialized: view}
+
+vars:
+  # Telemetry contract: fixed 15-minute sampling interval.
+  telemetry_interval_minutes: 15
+  # Events ingested more than this long after event time are flagged late (still included:
+  # batch recomputation absorbs late data; streaming consumers would need a watermark).
+  late_arrival_threshold_minutes: 60
+
+  # ---------------------------------------------------------------------------
+  # Canonical KPI definitions — the single source of truth for metric logic.
+  # Every KPI is a ratio of SUMS of additive fact columns, never an average of
+  # per-row ratios. Used by dbt reporting models (macro kpi_select) AND read by
+  # the Streamlit dashboard, so SQL tab, dashboard and reporting views agree.
+  # ---------------------------------------------------------------------------
+  kpis:
+    - name: good_units
+      label: Good units
+      fmt: int
+      sql: "sum(good_units)"
+      description: Units produced minus distinct units rejected in QMS.
+    - name: variable_cost_per_good_unit
+      label: Variable cost / good unit
+      fmt: usd
+      sql: "(sum(material_cost_usd) + sum(energy_cost_usd)) / nullif(sum(good_units), 0)"
+      description: "Variable cost PROXY: ERP material cost + telemetry energy at the ERP facility tariff valid on the interval's local date, per good unit. Excludes labor, overhead and depreciation."
+    - name: material_cost_per_good_unit
+      label: Material cost / good unit
+      fmt: usd
+      sql: "sum(material_cost_usd) / nullif(sum(good_units), 0)"
+      description: ERP goods-issue material cost per good unit (rejected units consume material too).
+    - name: oee
+      label: OEE
+      fmt: pct
+      sql: "(sum(operating_minutes) / nullif(sum(planned_minutes), 0)) * (sum(ideal_run_seconds) / nullif(sum(operating_minutes) * 60, 0)) * (sum(good_units) / nullif(sum(units_produced), 0))"
+      description: Availability x Performance x Quality, each computed from summed numerators and denominators.
+    - name: availability
+      label: Availability
+      fmt: pct
+      sql: "sum(operating_minutes) / nullif(sum(planned_minutes), 0)"
+      description: Telemetry RUNNING minutes / MES scheduled minutes.
+    - name: performance
+      label: Performance
+      fmt: pct
+      sql: "sum(ideal_run_seconds) / nullif(sum(operating_minutes) * 60, 0)"
+      description: Ideal cycle time x units produced / operating time. Values above 100% are flagged by a dbt test, not capped.
+    - name: quality_rate
+      label: Yield (quality rate)
+      fmt: pct
+      sql: "sum(good_units) / nullif(sum(units_produced), 0)"
+      description: Good units / units produced.
+    - name: scrap_rate
+      label: Scrap rate
+      fmt: pct
+      sql: "sum(rejected_units) / nullif(sum(units_produced), 0)"
+      description: Distinct rejected units (QMS) / units produced (MES).
+    - name: energy_kwh_per_good_unit
+      label: Energy / good unit
+      fmt: kwh
+      sql: "sum(energy_kwh) / nullif(sum(good_units), 0)"
+      description: Deduplicated good-quality telemetry energy deltas per good unit.
+    - name: downtime_hours
+      label: Downtime
+      fmt: hours
+      sql: "sum(downtime_minutes) / 60.0"
+      description: Telemetry DOWN intervals, in hours.

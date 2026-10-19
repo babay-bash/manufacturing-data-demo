@@ -1,0 +1,53 @@
+version: 2
+models:
+  - name: dim_date
+    columns: [{name: date_key, tests: [unique, not_null]}]
+  - name: dim_facility
+    columns: [{name: facility_id, tests: [unique, not_null]}]
+  - name: dim_line
+    columns:
+      - {name: line_id, tests: [unique, not_null]}
+      - {name: facility_id, tests: [{relationships: {arguments: {to: ref('dim_facility'), field: facility_id}}}]}
+  - name: dim_machine
+    columns:
+      - {name: machine_id, tests: [unique, not_null]}
+      - {name: line_id, tests: [{relationships: {arguments: {to: ref('dim_line'), field: line_id}}}]}
+  - name: dim_product
+    columns: [{name: product_id, tests: [unique, not_null]}]
+  - name: dim_shift
+    columns: [{name: shift_code, tests: [unique, not_null]}]
+  - name: fct_production_performance
+    description: >
+      The single production performance fact. Grain: facility x line x machine x work-order
+      operation x date x shift (operation_id). Stores only additive measures; never average
+      a ratio across rows — use the canonical KPI definitions.
+    columns:
+      - name: operation_id
+        description: Grain key (one MES operation).
+        tests: [unique, not_null]
+      - name: date_key
+        tests: [not_null, {relationships: {arguments: {to: ref('dim_date'), field: date_key}}}]
+      - name: facility_id
+        tests: [not_null, {relationships: {arguments: {to: ref('dim_facility'), field: facility_id}}}]
+      - name: line_id
+        tests: [not_null, {relationships: {arguments: {to: ref('dim_line'), field: line_id}}}]
+      - name: machine_id
+        tests: [not_null, {relationships: {arguments: {to: ref('dim_machine'), field: machine_id}}}]
+      - name: product_id
+        tests: [not_null, {relationships: {arguments: {to: ref('dim_product'), field: product_id}}}]
+      - name: shift_code
+        tests: [not_null, {relationships: {arguments: {to: ref('dim_shift'), field: shift_code}}}]
+      - {name: good_units, tests: [non_negative]}
+      - {name: rejected_units, tests: [non_negative]}
+      - {name: energy_kwh, tests: [non_negative]}
+      - {name: energy_cost_usd, tests: [non_negative]}
+      - {name: material_cost_usd, tests: [non_negative]}
+    tests:
+      - expression_is_true: {arguments: {expression: "good_units + rejected_units = units_produced"}}
+      - expression_is_true: {arguments: {expression: "operating_minutes + idle_minutes + downtime_minutes <= planned_minutes"}}
+      - expression_is_true: {arguments: {expression: "variable_cost_usd = material_cost_usd + energy_cost_usd"}}
+      - expression_is_true:
+          name: performance_not_above_100pct
+          arguments:
+            expression: "ideal_run_seconds <= operating_minutes * 60"
+          config: {severity: warn}

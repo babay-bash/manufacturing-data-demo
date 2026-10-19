@@ -1,0 +1,3 @@
+shift_code,shift_name,local_start_time,duration_minutes
+DAY,Day shift,06:00,720
+NIGHT,Night shift,18:00,720

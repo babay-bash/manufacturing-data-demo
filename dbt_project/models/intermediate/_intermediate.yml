@@ -1,0 +1,39 @@
+version: 2
+models:
+  - name: int_mes__operations
+    description: MES operations with canonical machine IDs and the conformed facility/line hierarchy.
+    columns:
+      - name: operation_id
+        tests: [unique, not_null]
+      - name: machine_id
+        description: Fails if a MES machine code cannot be resolved to master data.
+        tests: [not_null, {relationships: {arguments: {to: ref('stg_ref__machines'), field: machine_id}}}]
+      - name: facility_id
+        tests: [not_null]
+  - name: int_telemetry__deduplicated
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+  - name: int_telemetry__aligned
+    columns:
+      - name: event_id
+        tests: [unique]
+      - name: quarantine_reason
+        tests:
+          - accepted_values:
+              arguments:
+                values: [UNMAPPED_SOURCE_TAG, BAD_SENSOR_QUALITY, NO_MATCHING_OPERATION, NO_TARIFF_FOR_DATE]
+  - name: int_telemetry__by_operation
+    columns:
+      - name: operation_id
+        tests: [unique, not_null]
+    tests:
+      - expression_is_true:
+          arguments:
+            expression: "state_intervals * {{ var('telemetry_interval_minutes') }} <= 720"
+  - name: int_qms__rejects_by_operation
+    columns: [{name: operation_id, tests: [unique, not_null]}]
+  - name: int_erp__material_transactions
+    columns: [{name: transaction_id, tests: [unique, not_null]}]
+  - name: int_erp__material_by_operation
+    columns: [{name: operation_id, tests: [unique, not_null]}]

@@ -1,0 +1,7 @@
+line_id,facility_id,line_name
+OH-L1,F-OH,Motor Assembly
+OH-L2,F-OH,Drive & Controller Assembly
+MX-L1,F-MX,Motor Assembly
+MX-L2,F-MX,Drive & Controller Assembly
+DE-L1,F-DE,Motor Assembly
+DE-L2,F-DE,Drive & Controller Assembly

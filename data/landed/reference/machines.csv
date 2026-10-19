@@ -1,0 +1,19 @@
+machine_id,line_id,machine_type,rated_kw
+M-OH-L1-01,OH-L1,Winding cell,60.800000000000004
+M-OH-L1-02,OH-L1,Assembly robot,22.0
+M-OH-L1-03,OH-L1,End-of-line tester,14.0
+M-OH-L2-01,OH-L2,Winding cell,38.0
+M-OH-L2-02,OH-L2,Assembly robot,22.0
+M-OH-L2-03,OH-L2,End-of-line tester,14.0
+M-MX-L1-01,MX-L1,Winding cell,38.0
+M-MX-L1-02,MX-L1,Assembly robot,22.0
+M-MX-L1-03,MX-L1,End-of-line tester,14.0
+M-MX-L2-01,MX-L2,Winding cell,38.0
+M-MX-L2-02,MX-L2,Assembly robot,22.0
+M-MX-L2-03,MX-L2,End-of-line tester,14.0
+M-DE-L1-01,DE-L1,Winding cell,38.0
+M-DE-L1-02,DE-L1,Assembly robot,22.0
+M-DE-L1-03,DE-L1,End-of-line tester,14.0
+M-DE-L2-01,DE-L2,Winding cell,38.0
+M-DE-L2-02,DE-L2,Assembly robot,22.0
+M-DE-L2-03,DE-L2,End-of-line tester,14.0

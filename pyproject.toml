@@ -1,0 +1,24 @@
+[project]
+name = "manufacturing-data-demo"
+version = "0.1.0"
+description = "Local, offline demo of a governed manufacturing data platform: Python ingestion + dbt on DuckDB + Streamlit."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "dbt-core>=1.10,<1.11",
+  "dbt-duckdb>=1.9,<1.11",
+  "duckdb>=1.3",
+  "streamlit>=1.45",
+  "pandas>=2.2",
+  "pyarrow>=19",
+  "altair>=5",
+  "sqlglot>=26",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

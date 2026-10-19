@@ -1,0 +1,23 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    description: Snapshot-loaded landed files written by pipeline/ingest.py. Every table carries _source_system, _source_file, _source_row, _batch_id and _loaded_at lineage columns.
+    tables:
+      - name: mes_production_orders
+        description: MES work-order operations, one row per machine x date x shift (demo simplification).
+      - name: qms_quality_events
+        description: QMS reject/defect events. A unit may have several defect events; count distinct unit_serial for rejected units.
+      - name: erp_material_costs
+        description: ERP goods-issue transactions. Contains exact re-export duplicates and later corrections of the same transaction_id.
+      - name: erp_energy_tariffs
+        description: Facility electricity tariffs with inclusive effective date ranges.
+      - name: telemetry_machine_signals
+        description: Historian telemetry (15-minute machine_state and energy_interval_kwh deltas) in arrival order; includes duplicates, late arrivals, bad-quality readings and an unmapped tag.
+      - name: ref_facilities
+      - name: ref_lines
+      - name: ref_machines
+      - name: ref_products
+      - name: ref_shifts
+      - name: ref_source_id_crosswalk
+        description: Maps source-system identifiers (historian tags, legacy Monterrey MES codes) to canonical IDs.

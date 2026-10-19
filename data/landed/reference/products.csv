@@ -1,0 +1,9 @@
+product_id,product_name,product_family,std_material_cost_usd,ideal_cycle_seconds
+P-100,Servo Motor 1kW,Motors,182.0,62
+P-101,Servo Motor 3kW,Motors,311.0,84
+P-102,Induction Motor 5kW,Motors,268.0,96
+P-103,Gear Motor GM-40,Motors,224.0,75
+P-104,Variable Frequency Drive 7.5kW,Drives,405.0,118
+P-105,Variable Frequency Drive 15kW,Drives,612.0,140
+P-106,Motion Controller MC-2,Controllers,254.0,70
+P-107,Edge I/O Module,Controllers,96.0,45

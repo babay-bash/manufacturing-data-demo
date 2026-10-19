@@ -1,0 +1,10 @@
+# Local-only profile. DEMO_DB_PATH is set by pipeline/run.py to the per-user build database.
+manufacturing_demo:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('DEMO_DB_PATH') }}"
+      threads: 4
+      settings:
+        TimeZone: UTC

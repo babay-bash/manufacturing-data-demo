@@ -1,0 +1,64 @@
+version: 2
+models:
+  - name: stg_mes__production_orders
+    description: MES operations, renamed and typed. Grain = operation_id.
+    columns:
+      - name: operation_id
+        tests: [unique, not_null]
+      - name: shift_code
+        tests: [{accepted_values: {arguments: {values: [DAY, NIGHT]}}}]
+      - name: units_produced
+        tests: [not_null, non_negative]
+      - name: scheduled_minutes
+        tests: [not_null, non_negative]
+    tests:
+      - expression_is_true: {arguments: {expression: "shift_end_utc > shift_start_utc"}}
+  - name: stg_qms__quality_events
+    columns:
+      - name: quality_event_id
+        tests: [unique, not_null]
+      - name: unit_serial
+        tests: [not_null]
+      - name: disposition
+        tests: [{accepted_values: {arguments: {values: [SCRAP]}}}]
+  - name: stg_erp__material_costs
+    description: Landed grain; transaction_id is NOT unique here by design (replays + corrections).
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: material_cost_usd
+        tests: [not_null, non_negative]
+      - name: currency
+        tests: [{accepted_values: {arguments: {values: [USD]}}}]
+  - name: stg_erp__energy_tariffs
+    columns:
+      - name: usd_per_kwh
+        tests: [not_null, non_negative]
+    tests:
+      - expression_is_true: {arguments: {expression: "effective_to >= effective_from"}}
+  - name: stg_telemetry__machine_signals
+    description: Landed grain including duplicate deliveries; energy normalized to kWh.
+    columns:
+      - name: event_id
+        tests: [not_null]
+      - name: event_type
+        tests: [{accepted_values: {arguments: {values: [machine_state, energy_interval_kwh]}}}]
+      - name: quality_code
+        tests: [{accepted_values: {arguments: {values: [GOOD, BAD]}}}]
+      - name: source_unit
+        tests: [{accepted_values: {arguments: {values: [kWh, Wh]}}}]
+      - name: machine_state
+        tests: [{accepted_values: {arguments: {values: [RUNNING, IDLE, DOWN]}}}]
+  - name: stg_ref__facilities
+    columns: [{name: facility_id, tests: [unique, not_null]}]
+  - name: stg_ref__lines
+    columns: [{name: line_id, tests: [unique, not_null]}]
+  - name: stg_ref__machines
+    columns: [{name: machine_id, tests: [unique, not_null]}]
+  - name: stg_ref__products
+    columns: [{name: product_id, tests: [unique, not_null]}]
+  - name: stg_ref__shifts
+    columns: [{name: shift_code, tests: [unique, not_null]}]
+  - name: stg_ref__source_id_crosswalk
+    tests:
+      - expression_is_true: {arguments: {expression: "canonical_id is not null"}}

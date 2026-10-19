@@ -1,0 +1,16 @@
+flowchart LR
+  A["Field assets / sensors"] --> B["Instrumented endpoint or edge gateway"]
+  B --> C["Kafka"]
+  D["ERP / MES / QMS / CRM / SaaS"] --> E["Share, events, APIs or file integrations"]
+  F["Operational databases"] --> G["CDC via Debezium / Kafka or incremental extracts"]
+  C --> H["S3 raw landing"]
+  E --> H
+  G --> H
+  C -. "low-latency consumers (ML features, automated workflows)" .-> P["Direct Kafka consumers"]
+  H --> I["Snowflake raw / bronze"]
+  I --> J["dbt standardized intermediate / silver"]
+  J --> K["Resolved entities and conformed dimensions / facts"]
+  K --> L["Snowflake semantic views and governed metrics"]
+  L --> M["Cortex conversational analytics and BI"]
+  N["Verified question-SQL cases"] --> O["Evaluation runs / regressions"]
+  M --> O

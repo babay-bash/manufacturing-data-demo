@@ -1,0 +1,23 @@
+{
+  "seed": 20261019,
+  "mes_operations": 3202,
+  "skipped_planned_maintenance_shifts": 38,
+  "full_shift_outages": 3,
+  "quality_hold_shifts": 4,
+  "zero_good_unit_operations": 7,
+  "telemetry_rows_landed": 310512,
+  "telemetry_duplicate_deliveries": 1200,
+  "telemetry_late_events_injected": 1800,
+  "telemetry_late_events_after_dedupe": 2988,
+  "telemetry_bad_quality_events": 600,
+  "telemetry_unmapped_events": 1920,
+  "telemetry_unique_events": 309312,
+  "qms_events": 29813,
+  "qms_orphan_events": 6,
+  "qms_rejected_units": 25944,
+  "erp_rows_landed": 6360,
+  "erp_duplicate_replays": 40,
+  "erp_corrections": 15,
+  "erp_unique_transactions": 6305,
+  "erp_material_cost_after_dedupe": 380815132.83
+}
